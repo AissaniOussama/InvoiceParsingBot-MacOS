@@ -1,0 +1,82 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.12'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.beryx.jlink' version '3.0.1'
+}
+
+
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+description = 'Demo project for Spring Boot'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'org.json:json:20240303'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.30'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // ✅ Excel Export
+    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.h2database:h2'
+
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+
+
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+// Tests komplett deaktivieren
+test {
+    enabled = false
+}
+
+tasks.withType(Test) {
+    enabled = false
+}
+jlink {
+    applicationName = 'InvoiceBot'
+    mainClass = 'InvoiceBot.InvoiceBotApplication'
+
+    jpackage {
+        installerType = null      // null = nur .app erzeugen
+        appVersion = project.version
+        vendor = 'Example Vendor'
+        // icon: optional, macOS icon: "src/main/resources/icon.icns"
+        imageOptions = ['--resource-dir', 'src/main/resources']
+    }
+
+    options = [
+        '--add-modules',
+        'java.desktop,java.sql,java.naming,java.management,java.rmi,java.xml'
+    ]
+}
+
+tasks.jlink.dependsOn tasks.bootJar
+
