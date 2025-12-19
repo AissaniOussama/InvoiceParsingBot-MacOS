@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import InvoiceBot.llm.LlmClient;
-
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-// ÄNDERUNG: classes = LlmClient.class
-// Wir laden NICHT die ganze App, sondern nur diesen einen Service.
-// Das macht den Test schneller und robuster gegen Fehler in anderen Klassen.
+
 @SpringBootTest(classes = LlmClient.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Tag("integration")
+// WICHTIG: Diese Zeile sorgt dafür, dass GitHub Actions den Test komplett ignoriert.
+@DisabledIfEnvironmentVariable(named = "CI", matches = "true")
 class LlmClientLiveTest {
 
     @Autowired

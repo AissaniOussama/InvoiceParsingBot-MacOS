@@ -60,6 +60,7 @@ class InvoicePipelineIntegrationTest {
         InvoiceData result = invoiceParser.parse(fakePdfText);
 
         // 4. ASSERT
+        
         assertNotNull(result, "Ergebnis darf nicht null sein");
         assertEquals("NEW-ERA-2025", result.getInvoiceNumber());
         

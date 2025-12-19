@@ -1,0 +1,37 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Code herunterladen
+    - uses: actions/checkout@v4
+    
+    # 2. Java 21 installieren
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+
+    # 3. Gradle ausführbar machen (wichtig für Linux-Server)
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    # 4. Bauen & Testen
+    # Der Befehl 'build' führt automatisch 'test' mit aus.
+    # Da du Mocks (@MockitoBean) nutzt, brauchst du hier KEINEN Key.
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@v3
+      with:
+        arguments: build
